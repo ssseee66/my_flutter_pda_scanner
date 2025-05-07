@@ -11,23 +11,40 @@ class MyFlutterPdaScannerUtil {
       "my_flutter_pda_scanner",
       StandardMessageCodec()
   );
+  BasicMessageChannel messageChannel = const BasicMessageChannel(
+      "null",
+      StandardMessageCodec()
+  );
+  void sendMessageToAndroid(String methodName, dynamic arg) async {
+    messageChannel.send({methodName: arg});
+  }
+  void sendChannelName(String methodName, dynamic channelName) async {
+    flutterChannel.send({methodName: channelName});
+  }
+  void setMessageChannel(String channelName, Future<dynamic> Function(dynamic message) handler) {
+    messageChannel = BasicMessageChannel(channelName, const StandardMessageCodec());
+    messageChannel.setMessageHandler(handler);
+  }
   void setAction(String action) {
-    flutterChannel.send({"setAction": action});
+    messageChannel.send({"setAction": action});
   }
   void setDataTag(List<String> dataTag) {
-    flutterChannel.send({"setDataTag": dataTag});
+    messageChannel.send({"setDataTag": dataTag});
   }
   void addDataTag(String dataTag) {
-    flutterChannel.send({"addDataTag": dataTag});
+    messageChannel.send({"addDataTag": dataTag});
   }
   void startListener() {
-    flutterChannel.send({"startListener": true});
+    messageChannel.send({"startListener": true});
   }
   void stopListener() {
-    flutterChannel.send({"stopListener": true});
+    messageChannel.send({"stopListener": true});
   }
   void disposeOver() {
-    flutterChannel.send({"disposeOver": true});
+    messageChannel.send({"disposeOver": true});
+  }
+  void destroy() {
+    messageChannel.send({"destroy": true});
   }
   Enum getOperationCode(int code) {
     switch (code) {
