@@ -2,29 +2,23 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'my_flutter_pda_scanner_util.dart';
-import 'package:logger/logger.dart';
 
 mixin MyFlutterPdaScannerMixin<T extends StatefulWidget> on State<T> {
   late StreamSubscription streamSubscription;
-  final MyFlutterPdaScannerUtil util = MyFlutterPdaScannerUtil();
-  Logger logger = Logger();
+  MyFlutterPdaScannerUtil scannerUtil = MyFlutterPdaScannerUtil();
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-    util.flutterChannel.setMessageHandler((dynamic message) async {});
-    util.setMessageChannel(hashCode.toString(), listenerPdaAndroidHandle);
-    util.sendChannelName("channelName", hashCode.toString());
+    scannerUtil.initUtil(listenerPdaAndroidHandle);
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    util.destroy();
-    util.flutterChannel.setMessageHandler(null);
-    util.messageChannel.setMessageHandler(null);
-    logger.i("注销通道");
+    scannerUtil.destroy();
   }
 
   Future<void> listenerPdaAndroidHandle(dynamic message);

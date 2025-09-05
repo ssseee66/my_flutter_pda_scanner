@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.BasicMessageChannel;
@@ -16,7 +18,7 @@ import io.flutter.plugin.common.StandardMessageCodec;
 public class MyFlutterPdaScannerPlugin implements FlutterPlugin {
     private static final String FLUTTER_TO_ANDROID_CHANNEL = "my_flutter_pda_scanner";
     private Context applicationContext;
-    private MyListener listener;
+    private MyListener listeners;
     private BasicMessageChannel<Object> flutterChannel;
 
 
@@ -30,6 +32,7 @@ public class MyFlutterPdaScannerPlugin implements FlutterPlugin {
                 FLUTTER_TO_ANDROID_CHANNEL,
                 StandardMessageCodec.INSTANCE
         );
+//        listeners = new MyListener(MESSAGE_CHANNEL, applicationContext, flutterPluginBinding.getBinaryMessenger());
 
         flutterChannel.setMessageHandler((message, reply) -> {
             Map<String, Object> channelMessage = castMap(message, String.class, Object.class);
@@ -37,8 +40,8 @@ public class MyFlutterPdaScannerPlugin implements FlutterPlugin {
             if (channelMessage.containsKey("channelName")) {
                 String channel_name = (String) channelMessage.get("channelName");
                 if (channel_name == null) return;
-                Log.i("channelName", channel_name);
-                listener = new MyListener(
+                Log.i("scannerChannelName", channel_name);
+                listeners = new MyListener(
                         channel_name,
                         applicationContext,
                         flutterPluginBinding.getBinaryMessenger()
@@ -49,7 +52,7 @@ public class MyFlutterPdaScannerPlugin implements FlutterPlugin {
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-        listener = null;
+        listeners = null;
         flutterChannel = null;
     }
     public static <K, V> Map<K, V> castMap(Object obj, Class<K> key, Class<V> value) {

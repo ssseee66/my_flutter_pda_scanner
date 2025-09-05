@@ -53,6 +53,7 @@ public class MyListener {
             if (arguments == null) return;
             String key = getCurrentKey();
             Log.i("currentKey", key);
+            Log.i("channelName", chanelName);
             Log.i("action", actionMap.keySet().toString());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Objects.requireNonNull(actionMap.get(key)).accept(key);
@@ -174,9 +175,10 @@ public class MyListener {
         Object value = arguments.get(key);
         if (value == null) return;
         if (!(boolean) value) return;
-        messageChannel = null;
-        if (broadcastReceiver != null)
+        if (broadcastReceiver != null) {
             applicationContext.unregisterReceiver(broadcastReceiver);
+            broadcastReceiver = null;
+        }
     }
     public static <K, V> Map<K, V> castMap(Object obj, Class<K> key, Class<V> value) {
         Map<K, V> map = new HashMap<>();
